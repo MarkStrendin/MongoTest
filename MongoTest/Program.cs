@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using MongoDB.Bson;
+using MongoDB.Bson.IO;
 using MongoDB.Driver;
 using MongoTest.Model;
 
@@ -19,8 +20,18 @@ namespace MongoTest
             Console.WriteLine("Connecting to collection...");
             IMongoCollection<FormSubmission> collection = database.GetCollection<FormSubmission>("GeneralRegistrationForms");
 
-            Console.WriteLine("Inserting test data");
-            collection.InsertOne(getTestData());
+            //Console.WriteLine("Inserting test data");
+            //collection.InsertOne(getTestData());
+            List<FormSubmission> allSubmissions = collection.Find(_ => true).ToList();
+
+            Console.WriteLine("-------------------");
+            foreach(FormSubmission form in allSubmissions)
+            {
+                Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(form));
+
+            }
+            Console.WriteLine("-------------------");
+
         }
 
 
