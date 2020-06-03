@@ -12,44 +12,52 @@ namespace MongoTest
         static void Main(string[] args)
         {
             Console.WriteLine("Connecting...");
-            MongoClient dbClient = new MongoClient("mongodb://10.0.0.120");
 
-            Console.WriteLine("Connecting to database...");
-            IMongoDatabase database = dbClient.GetDatabase("Registration");
+            MongoUrl dbConnectionString = new MongoUrl("connectionstring");
+            MongoClient dbClient = new MongoClient(dbConnectionString);
+
+            //Console.WriteLine("Connecting to database...");
+            IMongoDatabase database = dbClient.GetDatabase(dbConnectionString.DatabaseName);
 
             Console.WriteLine("Connecting to collection...");
-            IMongoCollection<FormSubmission> collection = database.GetCollection<FormSubmission>("GeneralRegistrationForms");
+            IMongoCollection<SubmittedRegistrationForm> collection = database.GetCollection<SubmittedRegistrationForm>("GenRegForm");
 
-            //Console.WriteLine("Inserting test data");
-            //collection.InsertOne(getTestData());
-            List<FormSubmission> allSubmissions = collection.Find(_ => true).ToList();
+            /* 
+            Console.WriteLine("Inserting test data");
+            collection.InsertOne(getTestData());
+
+            //*/
+
+
+            List<SubmittedRegistrationForm> allSubmissions = collection.Find(_ => true).ToList();
 
             Console.WriteLine("-------------------");
-            foreach(FormSubmission form in allSubmissions)
+            foreach (SubmittedRegistrationForm form in allSubmissions)
             {
                 Console.WriteLine(Newtonsoft.Json.JsonConvert.SerializeObject(form));
-
             }
             Console.WriteLine("-------------------");
+            //*/
 
         }
 
 
 
-        private static FormSubmission getTestData()
+        private static SubmittedRegistrationForm getTestData()
         {
-            return new FormSubmission()
+            return new SubmittedRegistrationForm()
             {
-                Id = 0,
-                SubmittedBy = new FormSubmitter()
+                Form = new FormSubmission()
                 {
-                    FirstName = "Harvey",
-                    LastName = "Birdman",
-                    ContactDetails = "Twitter: @harveybirdman"
-                },
-                Contacts = new ContactInfo()
-                {
-                    Contacts = new List<Contact>()
+                    SubmittedBy = new FormSubmitter()
+                    {
+                        FirstName = "Harvey",
+                        LastName = "Birdman",
+                        ContactDetails = "Twitter: @harveybirdman"
+                    },
+                    Contacts = new ContactInfo()
+                    {
+                        Contacts = new List<Contact>()
                     {
                         new Contact()
                         {
@@ -121,33 +129,34 @@ namespace MongoTest
                             EmailAddress = "harvey@sebbenandsebben.fake",
                         },
                     }
-                },
-                Student = new Student()
-                {
-                    FirstName = "Herp",
-                    LastName = "Derpson",
-                    LegalFirstName = "Herp",
-                    LegalLastName = "Derpson",
-                    Gender = "Unspecified",
-                    DateOfBirth = new DateTime(2000, 01, 01),
-                    PrimaryAddress = new Address()
-                    {
-                        Line1 = "123 Fake St",
-                        City = "Cake Town",
-                        Province = "Cake Province",
-                        PostalCode = "H0H0H0",
-                        Country = "Canada"
                     },
-                    MailingAddress = new Address()
+                    Student = new Student()
                     {
-                        Line1 = "123 Fake St",
-                        City = "Cake Town",
-                        Province = "Cake Province",
-                        PostalCode = "H0H0H0",
-                        Country = "Canada"
-                    },
-                    PreviousSchools = "Cake Town Preschool",
-                    MedicalNotes = "Allergic to cheese poofs"
+                        FirstName = "Herp",
+                        LastName = "Derpson",
+                        LegalFirstName = "Herp",
+                        LegalLastName = "Derpson",
+                        Gender = "Unspecified",
+                        DateOfBirth = new DateTime(2000, 01, 01),
+                        PrimaryAddress = new Address()
+                        {
+                            Line1 = "123 Fake St",
+                            City = "Cake Town",
+                            Province = "Cake Province",
+                            PostalCode = "H0H0H0",
+                            Country = "Canada"
+                        },
+                        MailingAddress = new Address()
+                        {
+                            Line1 = "123 Fake St",
+                            City = "Cake Town",
+                            Province = "Cake Province",
+                            PostalCode = "H0H0H0",
+                            Country = "Canada"
+                        },
+                        PreviousSchools = "Cake Town Preschool",
+                        MedicalNotes = "Allergic to cheese poofs"
+                    }
                 }
             };
         }
